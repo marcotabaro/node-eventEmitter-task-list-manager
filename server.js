@@ -4,8 +4,16 @@ class Server extends EventEmitter{
     constructor(client){
         super();
         client.on('command', (command) => {
-            console.log(`Command: ${command}`);
-            //help, add, ls, delete
+            switch (command) {
+                case 'help':
+                case 'add':
+                case 'ls':
+                case 'delete':
+                    this[command]();
+                    break;
+                default:
+                    this.emit('response', 'Unknown command...');
+            }
         });
     }
 

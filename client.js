@@ -9,6 +9,7 @@ const rl = readline.createInterface({
 const client = new EventEmitter();
 const server = require('./server')(client);
 
+
 rl.on('line', (input) => {
     client.emit('command', input);
 });
