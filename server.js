@@ -3,6 +3,8 @@ const EventEmitter = require('events');
 class Server extends EventEmitter{
     constructor(client){
         super();
+        this.tasks = {};
+        this.taskId = 1;
         process.nextTick(() => {
             this.emit('response', 'Type a command(help to list)')
         });
@@ -20,6 +22,12 @@ class Server extends EventEmitter{
         });
     }
 
+    tasksString() {
+        return Object.keys(this.tasks).map(key => {
+            return `${key}: ${this.tasks[key]}`;
+        }).join('\n');
+    }
+
     help() {
         this.emit('response', `Available commands:
         add task
@@ -27,13 +35,16 @@ class Server extends EventEmitter{
         delete: id`)
     }
     add(args) {
-        this.emit('response', args.join(' '));
+        this.tasks[this.taskId] = args.join(' ');
+        this.emit('response', `Added task ${this.taskId}`);
+        this.taskId++;
     }
     ls() {
-        this.emit('response', 'ls...');
+        this.emit('response', `Tasks: \n${this.tasksString()}`);
     }
-    delete() {
-        this.emit('response', 'delete...');
+    delete(args) {
+        delete(this.tasks[args[0]]);
+        this.emit('response', `Deleted task ${args[0]}`);
     }
 }
 
